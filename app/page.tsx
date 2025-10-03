@@ -239,7 +239,7 @@ export default function AutoGroupPage() {
               <Input
                 id="groupSize"
                 type="number"
-                min="1"
+                min="0"
                 value={groupSize}
                 onChange={(e) => setGroupSize(Number.parseInt(e.target.value) || 1)}
                 className="max-w-xs"
