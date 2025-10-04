@@ -15,7 +15,8 @@ import Image from "next/image"
 
 export default function AutoGroupPage() {
   const [inputText, setInputText] = useState("")
-  const [groupSize, setGroupSize] = useState<number>(3)
+  // keep as string so the user can clear the field while typing
+  const [groupSize, setGroupSize] = useState<string>("")
   const [groups, setGroups] = useState<string[][]>([])
   const [error, setError] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -34,15 +35,17 @@ export default function AutoGroupPage() {
       return
     }
 
-    if (groupSize < 1) {
-      setError("Group size must be at least 1")
+    // parse and validate group size (allow empty input while typing)
+    const parsedSize = parseInt(groupSize, 10)
+    if (Number.isNaN(parsedSize) || parsedSize < 1) {
+      setError("Group size must be a positive integer")
       return
     }
 
     // Create groups
     const newGroups: string[][] = []
-    for (let i = 0; i < items.length; i += groupSize) {
-      newGroups.push(items.slice(i, i + groupSize))
+    for (let i = 0; i < items.length; i += parsedSize) {
+      newGroups.push(items.slice(i, i + parsedSize))
     }
 
     setGroups(newGroups)
@@ -241,7 +244,8 @@ export default function AutoGroupPage() {
                 type="number"
                 min="0"
                 value={groupSize}
-                onChange={(e) => setGroupSize(Number.parseInt(e.target.value) || 1)}
+                onChange={(e) => setGroupSize(e.target.value)}
+                placeholder="Enter group size"
                 className="max-w-xs"
               />
             </div>
